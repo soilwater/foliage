@@ -1,0 +1,28 @@
+.navbar-item {
+    display: flex;
+}
+
+
+.navbar .select{
+    margin: 5px;
+}
+
+.hero{
+   margin-top: -100px !important
+}
+
+#containerTable{
+    padding-bottom: 30px;
+}
+
+  
+.zoom:hover {
+    transition: transform .2s; /* Animation */
+    transform: scale(2); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+    position: relative;
+    z-index: 99;
+}
+
+table{
+    width: 100% !important;
+}

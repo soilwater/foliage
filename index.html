@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top">
+    <head>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-126565767-3"></script>
+            <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-126565767-3');
+        </script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Foliage</title>
+        <link rel="stylesheet" href="public/css/bulma.min.css">
+        <link rel="stylesheet" href="public/css/custom.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    </head>
+
+    <body>
+        <!-- Navbar -->
+        <nav class="navbar is-light is-fixed-top">
+            <div class="container">
+                <div class="navbar-brand">
+                    <div class="select">
+                        <select id="vegetationTypeList" onchange="getVegetationType();">
+                            <option value="empty">Foliage type </option>
+                            <option value="alfalfa">Alfalfa</option>
+                            <option value="barley">Barley</option>
+                            <option value="cover crop">Cover crop</option>
+                            <option value="grassland">Grassland</option>
+                            <option value="soybean">Soybean</option>
+                            <option value="sorghum">Sorghum</option>
+                            <option value="pasture">Pasture</option>
+                            <option value="other">Other</option>
+                            <option value="potatoes">Potatoes</option>
+                            <option value="rice">Rice</option>
+                            <option value="strawberry">Strawberry</option>
+                            <option value="turf">Turf</option>
+                            <option value="spring wheat">Spring wheat</option>
+                            <option value="winter wheat">Winter wheat</option>
+                        </select>
+                    </div>
+
+                    <label class="button is-dark is-outlined is-light" id="btnUploadLabel" style="margin:5px;" disabled>
+                        <i class="fa fa-camera-retro fa-2x" aria-hidden="true"></i>
+                            <span class="is-hidden-mobile" style="padding-left: 10px;"><strong>Load images</strong></span>
+                    </label>
+
+                    <span class="navbar-burger burger" data-target="navMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    </span>
+                </div>
+
+                <div id="navMenu" class="navbar-menu">
+                    <div class="navbar-end">
+                        <div class="navbar-start">
+                            <a class="navbar-item" id="openAboutModalBtn">
+                                <span class="icon"><i class="fas fa-info"></i></span><span>About</span>
+                            </a>
+                            <a class="navbar-item" href="https://github.com/andres-patrignani/foliage" target="_blank">
+                                <span class="icon"><i class="fab fa-github"></i></span><span>Github</span>
+                            </a>
+                            <a class="navbar-item" id="openSettingsModalBtn">
+                                <span class="icon"><i class="fas fa-cog"></i></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Progrss bar -->
+        <progress class="progress is-small is-primary is-radiusless" id="progressBar" value="" max="100"></progress>
+
+        <section class="hero is-fullheight" id="heroBanner">
+            <div class="hero-body">
+                <div class="container has-text-centered" style="margin-top:50px;">
+                    <figure>
+                        <img src="public/img/logo.png" class="align-center" style="width: calc(350px + 5vw); height: auto;"/>
+                    </figure>
+                    <h2 class="subtitle">
+                        <i>A minimalist tool for batch image processing of green canopy cover.</i>
+                    </h2>
+                    <br/>
+                </div>
+            </div>
+
+            <div class="hero-foot">
+                <p style="margin-left:10px">Version 1.0</p>
+            </div>
+        </section>
+
+        <!-- Results table -->
+        <div class="container " id="containerTable">
+            <table class="table is-bordered" id="resultsTable">
+                <tr>
+                    <th>#</th>
+                    <th>Original</th>
+                    <th>Classified</th>
+                    <th class="is-hidden-mobile">Vegetation</th> 
+                    <th class="is-hidden-mobile">Filename</th> 
+                    <th>Cover</th>
+                    <th>Lat</th>
+                    <th>Lon</th>
+                    <th class="is-hidden-mobile">Altitude</th>
+                </tr>
+            </table>
+    
+            <div class="container">
+                <button type="button" id="btnDownloadCSV" class="button is-link">
+                    <i class="fas fa-file-download" aria-hidden="true"></i>&nbsp;  <span class="is-hidden-mobile">Download</span>&nbsp; CSV
+                </button>
+                <button type="button" id="btnDownloadZIP" class="button is-successfull">
+                    <i class="fas fa-file-archive" aria-hidden="true"></i>&nbsp;  <span class="is-hidden-mobile">Download</span>&nbsp; ZIP
+                    </button>
+                <button type="button" id="btnDeleteTable" class="button is-danger is-outlined is-pulled-right">
+                    <i class="fas fa-trash-alt" aria-hidden="true"></i>&nbsp;  <span class="is-hidden-mobile">Delete table</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Modal -->
+        <div class="modal" id="aboutModal">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                <p class="modal-card-title">About</p>
+                <button class="delete" id="closeAboutModal" aria-label="close"></button>
+                </header>
+                <section class="modal-card-body">
+                    <p>
+                        Foliage is a light-weight web application for analyzing green canopy cover from a batch of images. 
+                        Foliage is a spin-off from the Canopeo application and uses the same algorithm to classify green canopy cover.
+                        Foliage does not require installing any software or signing in for a new account.
+                    </p>
+
+                    <br/>
+                    <br/>
+
+                    <h3 class="subtitle has-text-weight-bold">Feedback</h3>
+                    <p> 
+                        For making feature requests and reporting errors, please open an issue in the <a href="https://github.com/andres-patrignani/foliage" target="_blank">Github repository</a>.
+                        For other issues contact Andres Patrignani at: andrespatrignani@ksu.edu
+                    </p>
+                    <br/>
+                    <br/>
+
+                    <h3 class="subtitle has-text-weight-bold">Privacy and image metadata</h3>
+                    <p>
+                    Foliage retrieves metadata such as image name, image dimensions, timestamp, and geographic coordinates
+                    already present in the uploaded images. At this point Foliage does not make use of the current user location. 
+                    If the uploaded images don't contain geographic coordinates, Foliage outputs <i>null</i> values in the output table.
+                    Foliage does not collect any private user or image information. All images and metadata remain in your local device at all times.
+                    If one day we decided to do so, we will first ask for your permission.
+                    </p>
+
+                    <br/>
+                    <br/>
+
+                    <h3 class="subtitle has-text-weight-bold">License</h3>
+                    <p>Foliage is an open-source project under the MIT license and runs entirely in your web browser. We only request that you acknowledge and
+                        properly cite our work.
+                    </p>
+
+                    <br/>
+                    <br/>
+
+                    <h3 class="subtitle has-text-weight-bold">Reference</h3>
+                    <a href="https://zenodo.org/badge/latestdoi/233376575">
+                        Andres Patrignani. (2020, April 4). andres-patrignani/foliage: Foliage (Version v1.0). Zenodo. http://doi.org/10.5281/zenodo.3740240
+                    </a>
+
+                    <br/>
+                    <br/>
+
+                    <h3 class="subtitle has-text-weight-bold">Image processing details</h3>
+                    <p>
+                        Details of the image processing routine are described in Patrignani, A. and Ochsner, T.E., 2015. 
+                        Canopeo: A powerful new tool for measuring fractional green canopy cover. 
+                        Agronomy Journal, 107(6), pp.2312-2320 <a href="https://dl.sciencesocieties.org/publications/aj/abstracts/107/6/2312">Link</a>
+                    </p>
+
+                    <br/>
+                    <br/>
+
+                    <h3 class="subtitle has-text-weight-bold">External packages</h3>
+                    <p>This tool wouldn't be possible without the following projects:</p>
+                    <br/>
+                    <a href="https://www.npmjs.com/package/file-saver/v/1.3.2">FileSaver.JS</a>
+                    <br/>
+                    <a href="https://stuk.github.io/jszip/">JSZip.js</a>
+                    <br/>
+                    <a href="https://p5js.org/">p5.js</a>
+                    <br/>
+                    <a href="https://bulma.io/">Bulma CSS framework</a>
+                    <br/>
+                    <a href="https://github.com/exif-js/exif-js">Exif.js</a>
+                    <br/>
+                    <a href="https://fontawesome.com/">Fontawesome</a>
+
+                    <br/>
+                    <p style="margin-top:50px; color: lightslategray;"><i>Copyright Andres Patrignani 2020</i></p>
+
+                </section>
+            </div>
+        </div>
+
+        <!-- Settings modal -->
+        <div class="modal" id="settingsModal">
+            <div class="modal-background"></div>
+            <div class="modal-content">
+                <div style="margin:5px;">
+                    <label for="setting-ratio" style="color:white;">Red to Green Ratio</label>
+                    <input class="input" type="number" id="rg-ratio" min="0.5" max="1.1" step="0.05" value="0.95" placeholder="0.95">
+                </div>
+                <div style="margin:5px;">
+                    <label for="setting-ratio" style="color:white;">Blue to Green Ratio</label>
+                    <input class="input" type="number" id="bg-ratio" min="0.5" max="1.1" step="0.05" value="0.95" placeholder="0.95">
+                </div>
+                <div style="margin:5px;">
+                    <label for="setting-ratio" style="color:white;">Minimum Excess Green</label>
+                    <input class="input" type="number" id="exg" min="0" max="50" step="5" value="20" placeholder="20">
+                </div>
+            </div>
+            <button class="modal-close is-large" id="closeSettingsModal" aria-label="close"></button>
+        </div>
+
+
+        <script src="public/js/FileSaver.js"></script>
+        <script src="public/js/jszip.min.js"></script>
+        <script src="public/js/exif.js"></script>
+        <script src="public/js/foliage_v1.0.js"></script>
+        <script src="public/libraries/p5/p5.min.js"></script>
+        <script src="public/libraries/p5/addons/p5.dom.min.js"></script>
+
+        <script>
+        (function() {
+            var burger = document.querySelector('.burger');
+            var nav = document.querySelector('#'+burger.dataset.target);
+           
+            burger.addEventListener('click', function(){
+              burger.classList.toggle('is-active');
+              nav.classList.toggle('is-active');
+            });
+          })();
+        </script>
+    </body>
+</html>
